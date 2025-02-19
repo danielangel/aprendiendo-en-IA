@@ -1,0 +1,50 @@
+﻿@page "/evaluar-cliente"
+@using FactoringAI.Model
+@using FactoringAI.Services
+@inject ClienteService ClienteService
+
+<h3>Evaluar Cliente</h3>
+
+<EditForm Model="@cliente" OnValidSubmit="@EvaluarClienteIA">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="form-group">
+        <label>Nombre</label>
+        <InputText @bind-Value="cliente.Nombre" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label>Ingresos</label>
+        <InputNumber @bind-Value="cliente.Ingresos" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label>Deudas</label>
+        <InputNumber @bind-Value="cliente.Deudas" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label>Puntaje de Crédito</label>
+        <InputNumber @bind-Value="cliente.PuntajeCredito" class="form-control" />
+    </div>
+    <button type="submit" class="btn btn-primary">Evaluar</button>
+</EditForm>
+
+@if (resultadoEvaluacion.HasValue)
+{
+    <div class="mt-3">
+        <strong>Resultado:</strong> @(resultadoEvaluacion.Value ? "Aprobado" : "Rechazado")
+    </div>
+}
+
+@code {
+    private Cliente cliente = new Cliente();
+    private bool? resultadoEvaluacion = null;
+
+    private async Task EvaluarClienteIA()
+    {
+
+
+
+        resultadoEvaluacion = await ClienteService.EvaluarClienteAsync(cliente);
+        await ClienteService.AgregarClienteAsync(cliente);
+    }
+}
